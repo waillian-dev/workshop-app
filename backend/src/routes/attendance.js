@@ -106,4 +106,46 @@ router.get('/admin/attendance', authenticate, requireRole('admin'), (req, res) =
   res.json({ records });
 });
 
+router.post('/attendance/session-check-in', authenticate, requireRole('attendee'), (req, res) => {
+  const { sessionId } = req.body;
+  if (!sessionId) {
+    return res.status(400).json({ error: 'Session ID is required.' });
+  }
+
+  const session = db
+    .prepare('SELECT * FROM sessions WHERE id = ?')
+    .get(sessionId);
+
+  if (!session) {
+    return res.status(404).json({ error: 'Session not found.' });
+  }
+
+  if (!session.is_open) {
+    return res.status(400).json({ error: 'This session is not open for attendance check-in.' });
+  }
+
+  const existing = db
+    .prepare('SELECT * FROM attendance WHERE user_id = ?')
+    .get(req.user.id);
+
+  if (existing) {
+    return res.json({
+      status: 'already_checked_in',
+      message: 'You have already checked in.',
+      checkedInAt: existing.checked_in_at,
+    });
+  }
+
+  const checkedInAt = new Date().toISOString();
+  db.prepare(
+    `INSERT INTO attendance (user_id, checked_in_at, method, session_id) VALUES (?, ?, 'session', ?)`
+  ).run(req.user.id, checkedInAt, sessionId);
+
+  res.json({
+    status: 'checked_in',
+    message: 'Attendance recorded successfully.',
+    checkedInAt,
+  });
+});
+
 export default router;

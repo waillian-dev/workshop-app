@@ -40,6 +40,7 @@ export function initDatabase() {
       start_time TEXT NOT NULL,
       end_time TEXT NOT NULL,
       location TEXT,
+      is_open INTEGER NOT NULL DEFAULT 0,
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
@@ -49,6 +50,7 @@ export function initDatabase() {
       user_id INTEGER NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE,
       checked_in_at TEXT NOT NULL,
       method TEXT NOT NULL DEFAULT 'qr',
+      session_id INTEGER REFERENCES sessions(id) ON DELETE SET NULL,
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
 
@@ -68,6 +70,18 @@ export function initDatabase() {
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
   `);
+
+  try {
+    db.exec("ALTER TABLE sessions ADD COLUMN is_open INTEGER DEFAULT 0;");
+  } catch (e) {
+    // Column already exists
+  }
+
+  try {
+    db.exec("ALTER TABLE attendance ADD COLUMN session_id INTEGER REFERENCES sessions(id) ON DELETE SET NULL;");
+  } catch (e) {
+    // Column already exists
+  }
 }
 
 export default db;

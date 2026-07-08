@@ -66,6 +66,8 @@ export const api = {
     return request(`/api/admin/attendees${query ? `?${query}` : ''}`);
   },
   getDashboard: () => request('/api/admin/dashboard'),
+  toggleSessionOpen: (id) => request(`/api/sessions/${id}/toggle-open`, { method: 'POST' }),
+  sessionCheckIn: (sessionId) => request('/api/attendance/session-check-in', { method: 'POST', body: JSON.stringify({ sessionId }) }),
 };
 
 export function downloadBlob(blob, filename) {

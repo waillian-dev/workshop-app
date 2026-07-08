@@ -108,4 +108,16 @@ router.delete('/:id', authenticate, requireRole('admin'), (req, res) => {
   res.json({ message: 'Session deleted.' });
 });
 
+router.post('/:id/toggle-open', authenticate, requireRole('admin'), (req, res) => {
+  const id = Number(req.params.id);
+  const existing = db.prepare('SELECT * FROM sessions WHERE id = ?').get(id);
+  if (!existing) return res.status(404).json({ error: 'Session not found.' });
+
+  const nextState = existing.is_open ? 0 : 1;
+  db.prepare("UPDATE sessions SET is_open = ?, updated_at = datetime('now') WHERE id = ?").run(nextState, id);
+
+  const updated = db.prepare('SELECT * FROM sessions WHERE id = ?').get(id);
+  res.json({ session: updated });
+});
+
 export default router;

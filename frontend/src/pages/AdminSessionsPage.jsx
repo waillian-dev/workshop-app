@@ -95,6 +95,16 @@ export default function AdminSessionsPage() {
     }
   }
 
+  async function handleToggle(id) {
+    setError('');
+    try {
+      await api.toggleSessionOpen(id);
+      await loadSessions();
+    } catch (err) {
+      setError(err.message);
+    }
+  }
+
   if (loading) return (
     <div className="card loading-card">
       <div className="spinner"></div>
@@ -126,6 +136,7 @@ export default function AdminSessionsPage() {
                 <th>Speaker</th>
                 <th>Time</th>
                 <th>Location</th>
+                <th>Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -137,7 +148,21 @@ export default function AdminSessionsPage() {
                   <td>{formatTimeRange(session.start_time, session.end_time)}</td>
                   <td>{session.location || '—'}</td>
                   <td>
+                    {session.is_open ? (
+                      <span className="badge success">Open</span>
+                    ) : (
+                      <span className="badge neutral">Closed</span>
+                    )}
+                  </td>
+                  <td>
                     <div className="actions">
+                      <button 
+                        className={`btn ${session.is_open ? 'secondary' : ''}`} 
+                        onClick={() => handleToggle(session.id)}
+                        style={{ fontSize: '0.8rem', padding: '0.4rem 0.75rem' }}
+                      >
+                        {session.is_open ? 'Close Check-in' : 'Open Check-in'}
+                      </button>
                       <button className="btn secondary" onClick={() => openEdit(session)}>Edit</button>
                       <button className="btn danger" onClick={() => handleDelete(session.id)}>Delete</button>
                     </div>
