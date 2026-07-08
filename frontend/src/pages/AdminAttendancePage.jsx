@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { api, formatDateTime } from '../api';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function AdminAttendancePage() {
   const [records, setRecords] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
+  const { t } = useLanguage();
 
   useEffect(() => {
     api.getAdminAttendance()
@@ -16,25 +18,25 @@ export default function AdminAttendancePage() {
   return (
     <div>
       <div className="page-header">
-        <h1>Attendance Records</h1>
+        <h1>{t('attendanceRecords')}</h1>
       </div>
       {error && <div className="alert error">{error}</div>}
       {loading ? (
         <div className="card loading-card">
           <div className="spinner"></div>
-          Loading attendance records...
+          {t('loading')}
         </div>
       ) : records.length === 0 ? (
-        <div className="card empty-state">No attendance records yet.</div>
+        <div className="card empty-state">{t('noAttendanceRecords')}</div>
       ) : (
         <div className="card">
           <table>
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Checked In At</th>
-                <th>Method</th>
+                <th>{t('nameLabel')}</th>
+                <th>{t('email')}</th>
+                <th>{t('checkedInAt')}</th>
+                <th>{t('method')}</th>
               </tr>
             </thead>
             <tbody>
@@ -43,7 +45,9 @@ export default function AdminAttendancePage() {
                   <td>{record.name}</td>
                   <td>{record.email}</td>
                   <td>{formatDateTime(record.checked_in_at)}</td>
-                  <td>{record.method}</td>
+                  <td>
+                    <span className="badge info">{record.method}</span>
+                  </td>
                 </tr>
               ))}
             </tbody>

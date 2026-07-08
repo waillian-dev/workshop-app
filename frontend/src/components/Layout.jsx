@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, NavLink, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 
 const navIcons = {
   Dashboard: (
@@ -72,8 +73,21 @@ const navIcons = {
   ),
 };
 
+const linkKeys = {
+  'Dashboard': 'dashboard',
+  'Sessions': 'sessions',
+  'Attendees': 'attendees',
+  'Attendance': 'attendance',
+  'QR Code': 'qrCode',
+  'Certificates': 'certificates',
+  'Schedule': 'schedule',
+  'Certificate': 'certificate',
+  'Public Schedule': 'publicSchedule'
+};
+
 export default function Layout() {
   const { user, logout } = useAuth();
+  const { t, language, changeLanguage } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
 
   const adminLinks = [
@@ -105,9 +119,9 @@ export default function Layout() {
               <path d="M16 7V5a4 4 0 0 0-8 0v2" />
             </svg>
           </span>
-          Workshop Management
+          {t('brandName')}
         </Link>
-        <button className="btn secondary btn-icon" onClick={() => setIsOpen(!isOpen)} type="button" aria-label="Toggle Navigation Menu">
+        <button className="btn secondary btn-icon" onClick={() => setIsOpen(!isOpen)} type="button" aria-label={t('toggleNav')}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             {isOpen ? (
               <>
@@ -138,7 +152,7 @@ export default function Layout() {
                 <path d="M16 7V5a4 4 0 0 0-8 0v2" />
               </svg>
             </span>
-            Workshop Management
+            {t('brandName')}
           </Link>
         </div>
 
@@ -152,7 +166,7 @@ export default function Layout() {
               className={({ isActive }) => (isActive ? 'active' : undefined)}
             >
               {navIcons[link.label]}
-              <span>{link.label}</span>
+              <span>{t(linkKeys[link.label] || link.label)}</span>
             </NavLink>
           ))}
           <NavLink
@@ -161,11 +175,31 @@ export default function Layout() {
             className={({ isActive }) => (isActive ? 'active' : undefined)}
           >
             {navIcons['Public Schedule']}
-            <span>Public Schedule</span>
+            <span>{t('publicSchedule')}</span>
           </NavLink>
         </nav>
 
+        {/* Sidebar Footer with Language Switcher */}
         <div className="sidebar-footer">
+          <div className="language-selector" style={{ display: 'flex', gap: '0.5rem', padding: '0.25rem', background: 'rgba(255, 255, 255, 0.03)', borderRadius: '8px', border: '1px solid var(--glass-border)' }}>
+            <button
+              className={`btn ${language === 'en' ? '' : 'secondary'}`}
+              onClick={() => changeLanguage('en')}
+              style={{ flex: 1, padding: '0.35rem', fontSize: '0.8rem', borderRadius: '6px', minHeight: 'auto', fontWeight: 'bold' }}
+              type="button"
+            >
+              EN
+            </button>
+            <button
+              className={`btn ${language === 'mm' ? '' : 'secondary'}`}
+              onClick={() => changeLanguage('mm')}
+              style={{ flex: 1, padding: '0.35rem', fontSize: '0.8rem', borderRadius: '6px', minHeight: 'auto', fontWeight: 'bold' }}
+              type="button"
+            >
+              MM
+            </button>
+          </div>
+          
           <div className="sidebar-user-info">
             <span className="avatar">{initials}</span>
             <div className="user-details">
@@ -179,7 +213,7 @@ export default function Layout() {
               <polyline points="16 17 21 12 16 7" />
               <line x1="21" y1="12" x2="9" y2="12" />
             </svg>
-            Logout
+            {t('logout')}
           </button>
         </div>
       </aside>

@@ -809,8 +809,19 @@ The feature is complete when:
 - Ineligible attendee cannot download a certificate.
 - Admin can view and download eligible attendee certificates.
 - Role-based access is enforced across frontend and backend.
+- Multi-language support (English and Myanmar) is active across all pages and persists in localStorage.
 
-## 19. Out of Scope for Version 1
+## 19. Multi-language Support (en/mm)
+
+The application supports dynamic multi-language translation between English (`en`) and Myanmar / Burmese (`mm`).
+
+### Features
+- **Language Switcher**: Toggle selector buttons (EN / MM) located in the sidebar footer.
+- **Persistence**: Selected language choice is saved in browser `localStorage` under `workshop_lang` and automatically loaded on subsequent visits.
+- **Translation Scope**: All UI pages, navigation links, alerts, form inputs, status badges, details modals, and confirmation dialogs are translated.
+- **Instant Translation**: Switching languages takes effect immediately across all active pages without requiring a page reload.
+
+## 20. Out of Scope for Version 1
 
 - Multi-day events
 - Multi-track schedules
@@ -825,7 +836,7 @@ The feature is complete when:
 - Refresh tokens
 - Password reset
 
-## 20. Recommended Implementation Milestones
+## 21. Recommended Implementation Milestones
 
 ### Milestone 1: Project Setup
 

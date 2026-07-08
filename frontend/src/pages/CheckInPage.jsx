@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { api, formatDateTime } from '../api';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function CheckInPage() {
   const { user, loading: authLoading } = useAuth();
+  const { t } = useLanguage();
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
   const [status, setStatus] = useState('idle');
@@ -50,65 +52,68 @@ export default function CheckInPage() {
   return (
     <div className="auth-page">
       <div className="card auth-card">
-        <h1>Attendance Check-In</h1>
+        <h1>{t('checkinTitle')}</h1>
+        
         {status === 'login_required' && (
-          <>
+          <div style={{ textAlign: 'center' }}>
             <div className="checkin-icon info-icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
                 <polyline points="10 17 15 12 10 7" />
                 <line x1="15" y1="12" x2="3" y2="12" />
               </svg>
             </div>
-            <div className="alert info">Please log in to check in.</div>
-            <Link className="btn" to={loginUrl}>Go to Login</Link>
-          </>
+            <div className="alert info">{t('pleaseLoginCheckin')}</div>
+            <Link className="btn btn-full" to={loginUrl}>{t('goToLogin')}</Link>
+          </div>
         )}
+        
         {status === 'checking_in' && (
-          <>
+          <div style={{ textAlign: 'center' }}>
             <div className="checkin-icon info-icon">
               <div className="spinner"></div>
             </div>
-            <div className="alert info">Checking you in...</div>
-          </>
+            <div className="alert info">{t('checkingYouIn')}</div>
+          </div>
         )}
+        
         {status === 'checked_in' && (
-          <>
+          <div style={{ textAlign: 'center' }}>
             <div className="checkin-icon success-icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="20 6 9 17 4 12" />
               </svg>
             </div>
-            <div className="alert success">{message}</div>
-            <p>Checked in at: {formatDateTime(checkedInAt)}</p>
-            <Link className="btn secondary" to="/dashboard">Go to Dashboard</Link>
-          </>
+            <div className="alert success">{t('alreadyCheckedInAlert')}</div>
+            {checkedInAt && <p style={{ color: 'var(--muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>{t('checkedInAt')}: {formatDateTime(checkedInAt)}</p>}
+            <Link className="btn btn-full" to="/dashboard">{t('goToDashboard')}</Link>
+          </div>
         )}
+        
         {status === 'already_checked_in' && (
-          <>
-            <div className="checkin-icon warning-icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10" />
-                <line x1="12" y1="8" x2="12" y2="12" />
-                <line x1="12" y1="16" x2="12.01" y2="16" />
+          <div style={{ textAlign: 'center' }}>
+            <div className="checkin-icon success-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="20 6 9 17 4 12" />
               </svg>
             </div>
-            <div className="alert warning">{message}</div>
-            <p>Checked in at: {formatDateTime(checkedInAt)}</p>
-            <Link className="btn secondary" to="/dashboard">Go to Dashboard</Link>
-          </>
+            <div className="alert success">{t('alreadyCheckedInAlert')}</div>
+            {checkedInAt && <p style={{ color: 'var(--muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>{t('checkedInAt')}: {formatDateTime(checkedInAt)}</p>}
+            <Link className="btn btn-full" to="/dashboard">{t('goToDashboard')}</Link>
+          </div>
         )}
+        
         {(status === 'invalid' || status === 'forbidden' || status === 'error') && (
-          <>
+          <div style={{ textAlign: 'center' }}>
             <div className="checkin-icon error-icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18" />
                 <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
             </div>
-            <div className="alert error">{message}</div>
-            <Link className="btn secondary" to="/">Back Home</Link>
-          </>
+            <div className="alert error">{message || 'Check-in failed.'}</div>
+            <Link className="btn btn-full secondary" to="/">{t('backHome')}</Link>
+          </div>
         )}
       </div>
     </div>
