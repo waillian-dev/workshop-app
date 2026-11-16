@@ -26,6 +26,7 @@
 5. Start the development server:
 
    npm run dev
+   ...
 
 ### Development
 
