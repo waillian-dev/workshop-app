@@ -11,4 +11,3 @@ registration, scheduling, and attendance tracking.
 - Workshop session management
 - QR-based attendance check-in
 - PDF certificate generation
-- Role-based access control
