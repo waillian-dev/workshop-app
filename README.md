@@ -1,11 +1,8 @@
 
-## Contributing
+## Project Highlights
 
-Contributions are welcome!
-
-1. Fork the repository.
-2. Create a feature branch.
-3. Commit your changes.
-4. Open a Pull Request.
-
-Please keep changes focused and well documented.
+- Workshop attendee registration
+- Session scheduling and management
+- QR-based attendance tracking
+- PDF certificate generation
+- Role-based access control
